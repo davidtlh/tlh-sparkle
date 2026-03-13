@@ -1,11 +1,62 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { BookOpen } from "lucide-react";
+import { TranscriptInput } from "@/components/TranscriptInput";
+import { LessonSummary, type LessonAnalysis } from "@/components/LessonSummary";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Index = () => {
+  const [analysis, setAnalysis] = useState<LessonAnalysis | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (transcript: string, source: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-lesson", {
+        body: { transcript },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setAnalysis(data.analysis);
+    } catch (err: any) {
+      console.error("Analysis error:", err);
+      toast.error(err.message || "Failed to analyze the lesson. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      <div className="container max-w-4xl mx-auto px-4 py-12">
+        {!analysis ? (
+          <>
+            {/* Hero */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-10"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
+                <BookOpen className="h-8 w-8 text-primary" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-3">
+                EFL Lesson Analyzer
+              </h1>
+              <p className="text-lg text-muted-foreground font-body max-w-lg mx-auto">
+                Paste your Zoom lesson transcript and get an instant summary of
+                corrections, mistakes, and areas to improve.
+              </p>
+            </motion.div>
+
+            <TranscriptInput onSubmit={handleSubmit} isLoading={isLoading} />
+          </>
+        ) : (
+          <LessonSummary analysis={analysis} onBack={() => setAnalysis(null)} />
+        )}
       </div>
     </div>
   );

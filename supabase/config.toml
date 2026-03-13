@@ -1,0 +1,4 @@
+project_id = "rkjcjwswmwyaaozmwcqw"
+
+[functions.analyze-lesson]
+verify_jwt = false

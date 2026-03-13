@@ -2,3 +2,15 @@ project_id = "rkjcjwswmwyaaozmwcqw"
 
 [functions.analyze-lesson]
 verify_jwt = false
+
+[functions.zoom-oauth-callback]
+verify_jwt = false
+
+[functions.zoom-recordings]
+verify_jwt = false
+
+[functions.zoom-transcript]
+verify_jwt = false
+
+[functions.zoom-auth-url]
+verify_jwt = false

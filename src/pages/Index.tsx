@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 import { TranscriptInput } from "@/components/TranscriptInput";
+import { ZoomConnect } from "@/components/ZoomConnect";
 import { LessonSummary, type LessonAnalysis } from "@/components/LessonSummary";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -47,8 +48,8 @@ const Index = () => {
                 EFL Lesson Analyzer
               </h1>
               <p className="text-lg text-muted-foreground font-body max-w-lg mx-auto">
-                Paste your Zoom lesson transcript and get an instant summary of
-                corrections, mistakes, and areas to improve.
+                Paste your Zoom lesson transcript or connect your Zoom account to
+                automatically fetch recordings.
               </p>
             </motion.div>
 

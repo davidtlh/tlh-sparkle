@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { FileText, Upload, Video, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ZoomConnect } from "@/components/ZoomConnect";
 
 interface TranscriptInputProps {
   onSubmit: (transcript: string, source: string) => void;
@@ -13,7 +13,6 @@ interface TranscriptInputProps {
 
 export function TranscriptInput({ onSubmit, isLoading }: TranscriptInputProps) {
   const [transcript, setTranscript] = useState("");
-  const [zoomUrl, setZoomUrl] = useState("");
 
   const handlePasteSubmit = () => {
     if (transcript.trim()) {
@@ -39,17 +38,25 @@ export function TranscriptInput({ onSubmit, isLoading }: TranscriptInputProps) {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="w-full max-w-2xl mx-auto"
     >
-      <Tabs defaultValue="paste" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-muted">
+      <Tabs defaultValue="zoom" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 bg-muted">
+          <TabsTrigger value="zoom" className="flex items-center gap-2 font-body">
+            <Video className="h-4 w-4" />
+            Zoom
+          </TabsTrigger>
           <TabsTrigger value="paste" className="flex items-center gap-2 font-body">
             <FileText className="h-4 w-4" />
-            Paste Transcript
+            Paste
           </TabsTrigger>
           <TabsTrigger value="upload" className="flex items-center gap-2 font-body">
             <Upload className="h-4 w-4" />
-            Upload File
+            Upload
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="zoom" className="mt-4">
+          <ZoomConnect onTranscriptReady={onSubmit} isLoading={isLoading} />
+        </TabsContent>
 
         <TabsContent value="paste" className="mt-4">
           <div className="space-y-4">

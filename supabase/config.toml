@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.zoom-transcript]
 verify_jwt = false
+
+[functions.zoom-auth-url]
+verify_jwt = false

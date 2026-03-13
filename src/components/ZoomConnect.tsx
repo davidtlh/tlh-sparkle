@@ -76,12 +76,17 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     }
   }
 
-  function handleConnect() {
-    const clientId = import.meta.env.VITE_ZOOM_CLIENT_ID;
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const redirectUri = `${supabaseUrl}/functions/v1/zoom-oauth-callback`;
-    const authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${sessionId}`;
-    window.location.href = authUrl;
+  async function handleConnect() {
+    try {
+      const { data, error } = await supabase.functions.invoke("zoom-auth-url");
+      if (error) throw error;
+      const { clientId, redirectUri } = data;
+      const authUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${sessionId}`;
+      window.location.href = authUrl;
+    } catch (err) {
+      toast.error("Failed to start Zoom authorization");
+      console.error(err);
+    }
   }
 
   async function handleSelectRecording(recording: Recording) {

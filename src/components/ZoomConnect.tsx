@@ -144,7 +144,7 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
       className="space-y-4"
     >
       <div className="flex items-center gap-2 text-sm text-muted-foreground font-body mb-2">
-        <CheckCircle className="h-4 w-4 text-green-600" />
+        <CheckCircle className="h-4 w-4 text-primary" />
         Zoom connected — select a recording to analyze
       </div>
 

@@ -137,15 +137,28 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     );
   }
 
+  async function handleDisconnect() {
+    await supabase.from("zoom_tokens").delete().eq("session_id", sessionId);
+    localStorage.removeItem("zoom_session_id");
+    setConnected(false);
+    setRecordings([]);
+    toast.success("Zoom disconnected. You can reconnect with updated permissions.");
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4"
     >
-      <div className="flex items-center gap-2 text-sm text-muted-foreground font-body mb-2">
-        <CheckCircle className="h-4 w-4 text-primary" />
-        Zoom connected — select a recording to analyze
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground font-body">
+          <CheckCircle className="h-4 w-4 text-primary" />
+          Zoom connected — select a recording to analyze
+        </div>
+        <Button variant="ghost" size="sm" onClick={handleDisconnect} className="text-xs text-muted-foreground">
+          Disconnect
+        </Button>
       </div>
 
       {loadingRecordings ? (

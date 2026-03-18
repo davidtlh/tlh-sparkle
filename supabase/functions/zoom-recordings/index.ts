@@ -26,7 +26,11 @@ async function refreshTokenIfNeeded(supabase: any, tokenRow: any) {
     }),
   });
 
-  if (!res.ok) throw new Error("Failed to refresh Zoom token");
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.error("Zoom token refresh failed:", res.status, errBody);
+    throw new Error(`REAUTH_NEEDED`);
+  }
 
   const tokens = await res.json();
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString();

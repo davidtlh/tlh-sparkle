@@ -26,7 +26,11 @@ async function refreshTokenIfNeeded(supabase: any, tokenRow: any) {
     }),
   });
 
-  if (!res.ok) throw new Error("Failed to refresh Zoom token");
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.error("Zoom token refresh failed:", res.status, errBody);
+    throw new Error(`REAUTH_NEEDED`);
+  }
 
   const tokens = await res.json();
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString();
@@ -103,8 +107,10 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("zoom-recordings error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const message = e instanceof Error ? e.message : "Unknown error";
+    const status = message === "REAUTH_NEEDED" ? 401 : 500;
+    return new Response(JSON.stringify({ error: message }), {
+      status, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

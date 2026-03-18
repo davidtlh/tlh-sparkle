@@ -1,0 +1,1 @@
+CREATE POLICY "Allow delete on zoom_tokens" ON public.zoom_tokens FOR DELETE TO public USING (true);

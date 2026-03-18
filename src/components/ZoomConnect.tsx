@@ -36,16 +36,34 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
 
   const sessionId = getSessionId();
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("zoom") === "connected") {
-      setConnected(true);
-      window.history.replaceState({}, "", window.location.pathname);
-      fetchRecordings();
-    } else {
-      checkConnection();
+  async function handleDisconnect() {
+    await supabase.from("zoom_tokens").delete().eq("session_id", sessionId);
+    localStorage.removeItem("zoom_session_id");
+    setConnected(false);
+    setRecordings([]);
+  }
+
+  async function fetchRecordings() {
+    setLoadingRecordings(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("zoom-recordings", {
+        body: { sessionId },
+      });
+      if (error) throw error;
+      if (data?.error === "REAUTH_NEEDED") {
+        toast.error("Zoom session expired. Please reconnect.");
+        await handleDisconnect();
+        return;
+      }
+      if (data?.error) throw new Error(data.error);
+      setRecordings(data.recordings || []);
+    } catch (err: any) {
+      toast.error("Failed to load recordings");
+      console.error(err);
+    } finally {
+      setLoadingRecordings(false);
     }
-  }, []);
+  }
 
   async function checkConnection() {
     const { data } = await supabase
@@ -60,21 +78,16 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     }
   }
 
-  async function fetchRecordings() {
-    setLoadingRecordings(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("zoom-recordings", {
-        body: { sessionId },
-      });
-      if (error) throw error;
-      setRecordings(data.recordings || []);
-    } catch (err: any) {
-      toast.error("Failed to load recordings");
-      console.error(err);
-    } finally {
-      setLoadingRecordings(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("zoom") === "connected") {
+      setConnected(true);
+      window.history.replaceState({}, "", window.location.pathname);
+      fetchRecordings();
+    } else {
+      checkConnection();
     }
-  }
+  }, []);
 
   async function handleConnect() {
     try {
@@ -137,11 +150,8 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     );
   }
 
-  async function handleDisconnect() {
-    await supabase.from("zoom_tokens").delete().eq("session_id", sessionId);
-    localStorage.removeItem("zoom_session_id");
-    setConnected(false);
-    setRecordings([]);
+  function onDisconnectClick() {
+    handleDisconnect();
     toast.success("Zoom disconnected. You can reconnect with updated permissions.");
   }
 
@@ -156,7 +166,7 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
           <CheckCircle className="h-4 w-4 text-primary" />
           Zoom connected — select a recording to analyze
         </div>
-        <Button variant="ghost" size="sm" onClick={handleDisconnect} className="text-xs text-muted-foreground">
+        <Button variant="ghost" size="sm" onClick={onDisconnectClick} className="text-xs text-muted-foreground">
           Disconnect
         </Button>
       </div>

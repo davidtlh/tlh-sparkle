@@ -70,12 +70,14 @@ serve(async (req) => {
 
     const accessToken = await refreshTokenIfNeeded(supabase, tokenRow);
 
-    // Get recordings from last 30 days
-    const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
-    const to = new Date().toISOString().split("T")[0];
+    // Get recordings from last 6 months to avoid missing older cloud recordings
+    const from = new Date();
+    from.setMonth(from.getMonth() - 6);
+    const fromDate = from.toISOString().split("T")[0];
+    const toDate = new Date().toISOString().split("T")[0];
 
     const zoomRes = await fetch(
-      `https://api.zoom.us/v2/users/me/recordings?from=${from}&to=${to}&page_size=30`,
+      `https://api.zoom.us/v2/users/me/recordings?from=${fromDate}&to=${toDate}&page_size=100`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 

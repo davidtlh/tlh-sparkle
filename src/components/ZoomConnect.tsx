@@ -170,7 +170,7 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
         </div>
       ) : recordings.length === 0 ? (
         <p className="text-center text-muted-foreground font-body py-8">
-          No cloud recordings found in the last 30 days.
+          No cloud recordings found in the last 6 months.
         </p>
       ) : (
         <div className="space-y-2 max-h-[400px] overflow-y-auto">

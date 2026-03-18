@@ -150,11 +150,8 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     );
   }
 
-  async function handleDisconnect() {
-    await supabase.from("zoom_tokens").delete().eq("session_id", sessionId);
-    localStorage.removeItem("zoom_session_id");
-    setConnected(false);
-    setRecordings([]);
+  function onDisconnectClick() {
+    handleDisconnect();
     toast.success("Zoom disconnected. You can reconnect with updated permissions.");
   }
 

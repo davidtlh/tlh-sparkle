@@ -166,7 +166,7 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
           <CheckCircle className="h-4 w-4 text-primary" />
           Zoom connected — select a recording to analyze
         </div>
-        <Button variant="ghost" size="sm" onClick={handleDisconnect} className="text-xs text-muted-foreground">
+        <Button variant="ghost" size="sm" onClick={onDisconnectClick} className="text-xs text-muted-foreground">
           Disconnect
         </Button>
       </div>

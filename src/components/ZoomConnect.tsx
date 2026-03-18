@@ -66,9 +66,24 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
       const { data, error } = await supabase.functions.invoke("zoom-recordings", {
         body: { sessionId },
       });
-      if (error) throw error;
+      if (error) {
+        // Check if the response indicates re-auth is needed
+        const body = typeof error === "object" && "context" in error ? error.context : null;
+        throw error;
+      }
+      if (data?.error === "REAUTH_NEEDED") {
+        toast.error("Zoom session expired. Please reconnect.");
+        await handleDisconnect();
+        return;
+      }
       setRecordings(data.recordings || []);
     } catch (err: any) {
+      // Handle 401 from edge function (REAUTH_NEEDED)
+      if (err?.message?.includes("REAUTH_NEEDED") || err?.status === 401) {
+        toast.error("Zoom session expired. Please reconnect.");
+        await handleDisconnect();
+        return;
+      }
       toast.error("Failed to load recordings");
       console.error(err);
     } finally {

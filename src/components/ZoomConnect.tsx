@@ -65,6 +65,19 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
     }
   }
 
+  async function checkConnection() {
+    const { data } = await supabase
+      .from("zoom_tokens")
+      .select("id")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+
+    if (data) {
+      setConnected(true);
+      fetchRecordings();
+    }
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("zoom") === "connected") {

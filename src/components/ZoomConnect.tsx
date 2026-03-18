@@ -36,6 +36,35 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
 
   const sessionId = getSessionId();
 
+  async function handleDisconnect() {
+    await supabase.from("zoom_tokens").delete().eq("session_id", sessionId);
+    localStorage.removeItem("zoom_session_id");
+    setConnected(false);
+    setRecordings([]);
+  }
+
+  async function fetchRecordings() {
+    setLoadingRecordings(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("zoom-recordings", {
+        body: { sessionId },
+      });
+      if (error) throw error;
+      if (data?.error === "REAUTH_NEEDED") {
+        toast.error("Zoom session expired. Please reconnect.");
+        await handleDisconnect();
+        return;
+      }
+      if (data?.error) throw new Error(data.error);
+      setRecordings(data.recordings || []);
+    } catch (err: any) {
+      toast.error("Failed to load recordings");
+      console.error(err);
+    } finally {
+      setLoadingRecordings(false);
+    }
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("zoom") === "connected") {
@@ -46,50 +75,6 @@ export function ZoomConnect({ onTranscriptReady, isLoading }: ZoomConnectProps) 
       checkConnection();
     }
   }, []);
-
-  async function checkConnection() {
-    const { data } = await supabase
-      .from("zoom_tokens")
-      .select("id")
-      .eq("session_id", sessionId)
-      .maybeSingle();
-
-    if (data) {
-      setConnected(true);
-      fetchRecordings();
-    }
-  }
-
-  async function fetchRecordings() {
-    setLoadingRecordings(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("zoom-recordings", {
-        body: { sessionId },
-      });
-      if (error) {
-        // Check if the response indicates re-auth is needed
-        const body = typeof error === "object" && "context" in error ? error.context : null;
-        throw error;
-      }
-      if (data?.error === "REAUTH_NEEDED") {
-        toast.error("Zoom session expired. Please reconnect.");
-        await handleDisconnect();
-        return;
-      }
-      setRecordings(data.recordings || []);
-    } catch (err: any) {
-      // Handle 401 from edge function (REAUTH_NEEDED)
-      if (err?.message?.includes("REAUTH_NEEDED") || err?.status === 401) {
-        toast.error("Zoom session expired. Please reconnect.");
-        await handleDisconnect();
-        return;
-      }
-      toast.error("Failed to load recordings");
-      console.error(err);
-    } finally {
-      setLoadingRecordings(false);
-    }
-  }
 
   async function handleConnect() {
     try {

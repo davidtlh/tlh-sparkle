@@ -41,9 +41,7 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-center mb-10"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
-                <BookOpen className="h-8 w-8 text-primary" />
-              </div>
+              <img src={tlhLogo} alt="The Language House" className="h-16 mb-6" />
               <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-3">
                 EFL Lesson Analyzer
               </h1>

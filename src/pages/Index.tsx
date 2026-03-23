@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import tlhLogo from "@/assets/TLH.png";
 import { TranscriptInput } from "@/components/TranscriptInput";
 import { ZoomConnect } from "@/components/ZoomConnect";
 import { LessonSummary, type LessonAnalysis } from "@/components/LessonSummary";

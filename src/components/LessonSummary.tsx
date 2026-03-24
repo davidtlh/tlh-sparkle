@@ -49,6 +49,13 @@ export function LessonSummary({ analysis, onBack }: LessonSummaryProps) {
         </div>
       </motion.div>
 
+      {/* Skills Radar Chart */}
+      {analysis.skillsProfile && (
+        <motion.div variants={stagger.item} className="bg-card border border-border rounded-lg p-5">
+          <SkillsRadarChart skills={analysis.skillsProfile} />
+        </motion.div>
+      )}
+
       {/* Strengths */}
       {analysis.strengths.length > 0 && (
         <motion.div variants={stagger.item} className="bg-accent/10 border border-accent/20 rounded-lg p-5">

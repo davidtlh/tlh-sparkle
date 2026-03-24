@@ -29,6 +29,7 @@ Focus on:
 4. Specific recommendations from the teacher
 5. Things the student did well (strengths)
 6. Practice exercises or homework suggested
+7. A skills profile rating the student from 1-10 on these categories: Grammar/tenses, Prepositions, Vocabulary, Expressions/idioms, Accuracy, Business language. Base the scores on evidence from the transcript.
 
 You MUST respond using the suggest_analysis tool. Be specific and use examples from the transcript.`;
 
@@ -82,11 +83,25 @@ You MUST respond using the suggest_analysis tool. Be specific and use examples f
                   teacherRecommendations: { type: "array", items: { type: "string" } },
                   strengths: { type: "array", items: { type: "string" } },
                   practiceExercises: { type: "array", items: { type: "string" } },
+                  skillsProfile: {
+                    type: "object",
+                    description: "Student skills rated 1-10",
+                    properties: {
+                      grammarTenses: { type: "number", description: "Grammar/tenses score 1-10" },
+                      prepositions: { type: "number", description: "Prepositions score 1-10" },
+                      vocabulary: { type: "number", description: "Vocabulary score 1-10" },
+                      expressionsIdioms: { type: "number", description: "Expressions/idioms score 1-10" },
+                      accuracy: { type: "number", description: "Accuracy score 1-10" },
+                      businessLanguage: { type: "number", description: "Business language score 1-10" },
+                    },
+                    required: ["grammarTenses", "prepositions", "vocabulary", "expressionsIdioms", "accuracy", "businessLanguage"],
+                  },
                 },
                 required: [
                   "overallLevel", "lessonTopic", "grammarMistakes",
                   "vocabularyIssues", "pronunciationNotes",
                   "teacherRecommendations", "strengths", "practiceExercises",
+                  "skillsProfile",
                 ],
               },
             },

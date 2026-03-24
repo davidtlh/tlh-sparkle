@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, CheckCircle2, BookOpen, ArrowLeft, MessageCircle, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SkillsRadarChart, type SkillsProfile } from "@/components/SkillsRadarChart";
 
 export interface LessonAnalysis {
   overallLevel: string;
@@ -11,6 +12,7 @@ export interface LessonAnalysis {
   teacherRecommendations: string[];
   strengths: string[];
   practiceExercises: string[];
+  skillsProfile: SkillsProfile;
 }
 
 interface LessonSummaryProps {
@@ -46,6 +48,13 @@ export function LessonSummary({ analysis, onBack }: LessonSummaryProps) {
           </p>
         </div>
       </motion.div>
+
+      {/* Skills Radar Chart */}
+      {analysis.skillsProfile && (
+        <motion.div variants={stagger.item} className="bg-card border border-border rounded-lg p-5">
+          <SkillsRadarChart skills={analysis.skillsProfile} />
+        </motion.div>
+      )}
 
       {/* Strengths */}
       {analysis.strengths.length > 0 && (

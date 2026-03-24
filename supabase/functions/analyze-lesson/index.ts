@@ -29,6 +29,7 @@ Focus on:
 4. Specific recommendations from the teacher
 5. Things the student did well (strengths)
 6. Practice exercises or homework suggested
+7. A skills profile rating the student from 1-10 on these categories: Grammar/tenses, Prepositions, Vocabulary, Expressions/idioms, Accuracy, Business language. Base the scores on evidence from the transcript.
 
 You MUST respond using the suggest_analysis tool. Be specific and use examples from the transcript.`;
 

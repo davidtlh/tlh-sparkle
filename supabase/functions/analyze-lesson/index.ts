@@ -28,7 +28,7 @@ Focus on:
 3. Pronunciation notes mentioned by the teacher
 4. Specific recommendations from the teacher
 5. Things the student did well (strengths)
-6. Practice exercises or homework suggested
+6. Generate exactly 10 EFL practice questions that test the specific grammar, vocabulary, and language points covered in the lesson. Each question should be a fill-in-the-blank, multiple choice, or sentence correction exercise directly related to the student's mistakes and lesson content. Include the correct answer for each question.
 7. A skills profile rating the student from 1-10 on these categories: Grammar/tenses, Prepositions, Vocabulary, Expressions/idioms, Accuracy, Business language. Base the scores on evidence from the transcript.
 
 You MUST respond using the suggest_analysis tool. Be specific and use examples from the transcript.`;

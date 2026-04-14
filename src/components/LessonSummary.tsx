@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, CheckCircle2, BookOpen, ArrowLeft, MessageCircle, Lightbulb } from "lucide-react";
+import { AlertTriangle, CheckCircle2, BookOpen, ArrowLeft, MessageCircle, Lightbulb, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SkillsRadarChart, type SkillsProfile } from "@/components/SkillsRadarChart";
 
@@ -11,7 +12,7 @@ export interface LessonAnalysis {
   pronunciationNotes: string[];
   teacherRecommendations: string[];
   strengths: string[];
-  practiceExercises: string[];
+  practiceQuestions: { question: string; answer: string }[];
   skillsProfile: SkillsProfile;
 }
 
@@ -27,6 +28,73 @@ const stagger = {
     animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   },
 };
+
+function PracticeQuestions({ questions }: { questions: { question: string; answer: string }[] }) {
+  const [revealed, setRevealed] = useState<Set<number>>(new Set());
+
+  const toggle = (i: number) =>
+    setRevealed((prev) => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+
+  const revealAll = () =>
+    setRevealed(new Set(questions.map((_, i) => i)));
+
+  const hideAll = () => setRevealed(new Set());
+
+  return (
+    <motion.div variants={stagger.item} className="bg-card border border-border rounded-lg p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-display font-semibold text-foreground">📝 Practice Questions</h3>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={revealed.size === questions.length ? hideAll : revealAll}
+          className="text-muted-foreground text-xs"
+        >
+          {revealed.size === questions.length ? (
+            <><EyeOff className="h-3.5 w-3.5 mr-1" /> Hide All</>
+          ) : (
+            <><Eye className="h-3.5 w-3.5 mr-1" /> Show All Answers</>
+          )}
+        </Button>
+      </div>
+      <ol className="space-y-3">
+        {questions.map((q, i) => (
+          <li key={i} className="font-body">
+            <div className="flex items-start gap-2">
+              <span className="text-muted-foreground font-medium min-w-[1.5rem]">{i + 1}.</span>
+              <div className="flex-1">
+                <p className="text-foreground">{q.question}</p>
+                <button
+                  onClick={() => toggle(i)}
+                  className="mt-1 text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                >
+                  {revealed.has(i) ? (
+                    <><EyeOff className="h-3 w-3" /> Hide answer</>
+                  ) : (
+                    <><Eye className="h-3 w-3" /> Show answer</>
+                  )}
+                </button>
+                {revealed.has(i) && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="mt-1 text-sm text-accent font-medium"
+                  >
+                    ✓ {q.answer}
+                  </motion.p>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </motion.div>
+  );
+}
 
 export function LessonSummary({ analysis, onBack }: LessonSummaryProps) {
   return (
@@ -142,16 +210,9 @@ export function LessonSummary({ analysis, onBack }: LessonSummaryProps) {
         </motion.div>
       )}
 
-      {/* Practice Exercises */}
-      {analysis.practiceExercises.length > 0 && (
-        <motion.div variants={stagger.item} className="bg-card border border-border rounded-lg p-5">
-          <h3 className="text-lg font-display font-semibold text-foreground mb-3">📝 Practice Exercises</h3>
-          <ol className="space-y-2 list-decimal list-inside">
-            {analysis.practiceExercises.map((ex, i) => (
-              <li key={i} className="text-foreground font-body">{ex}</li>
-            ))}
-          </ol>
-        </motion.div>
+      {/* Practice Questions */}
+      {analysis.practiceQuestions?.length > 0 && (
+        <PracticeQuestions questions={analysis.practiceQuestions} />
       )}
     </motion.div>
   );

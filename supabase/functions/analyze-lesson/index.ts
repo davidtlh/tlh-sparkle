@@ -82,7 +82,18 @@ You MUST respond using the suggest_analysis tool. Be specific and use examples f
                   pronunciationNotes: { type: "array", items: { type: "string" } },
                   teacherRecommendations: { type: "array", items: { type: "string" } },
                   strengths: { type: "array", items: { type: "string" } },
-                  practiceExercises: { type: "array", items: { type: "string" } },
+                  practiceQuestions: {
+                    type: "array",
+                    description: "Exactly 10 EFL practice questions based on the lesson content",
+                    items: {
+                      type: "object",
+                      properties: {
+                        question: { type: "string", description: "The practice question (fill-in-blank, multiple choice, or correction)" },
+                        answer: { type: "string", description: "The correct answer" },
+                      },
+                      required: ["question", "answer"],
+                    },
+                  },
                   skillsProfile: {
                     type: "object",
                     description: "Student skills rated 1-10",

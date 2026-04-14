@@ -111,7 +111,7 @@ You MUST respond using the suggest_analysis tool. Be specific and use examples f
                 required: [
                   "overallLevel", "lessonTopic", "grammarMistakes",
                   "vocabularyIssues", "pronunciationNotes",
-                  "teacherRecommendations", "strengths", "practiceExercises",
+                  "teacherRecommendations", "strengths", "practiceQuestions",
                   "skillsProfile",
                 ],
               },

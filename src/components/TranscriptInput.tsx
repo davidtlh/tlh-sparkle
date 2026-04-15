@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Upload, Video, Loader2 } from "lucide-react";
+import { FileText, Upload, Video, Loader2, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ZoomConnect } from "@/components/ZoomConnect";
+import { LiveTranscript } from "@/components/LiveTranscript";
 
 interface TranscriptInputProps {
   onSubmit: (transcript: string, source: string) => void;
@@ -39,10 +40,14 @@ export function TranscriptInput({ onSubmit, isLoading }: TranscriptInputProps) {
       className="w-full max-w-2xl mx-auto"
     >
       <Tabs defaultValue="zoom" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-muted">
+        <TabsList className="grid w-full grid-cols-4 bg-muted">
           <TabsTrigger value="zoom" className="flex items-center gap-2 font-body">
             <Video className="h-4 w-4" />
             Zoom
+          </TabsTrigger>
+          <TabsTrigger value="live" className="flex items-center gap-2 font-body">
+            <Radio className="h-4 w-4" />
+            Live
           </TabsTrigger>
           <TabsTrigger value="paste" className="flex items-center gap-2 font-body">
             <FileText className="h-4 w-4" />
@@ -56,6 +61,10 @@ export function TranscriptInput({ onSubmit, isLoading }: TranscriptInputProps) {
 
         <TabsContent value="zoom" className="mt-4">
           <ZoomConnect onTranscriptReady={onSubmit} isLoading={isLoading} />
+        </TabsContent>
+
+        <TabsContent value="live" className="mt-4">
+          <LiveTranscript onSubmit={onSubmit} isLoading={isLoading} />
         </TabsContent>
 
         <TabsContent value="paste" className="mt-4">

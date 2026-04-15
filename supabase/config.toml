@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.zoom-auth-url]
 verify_jwt = false
+
+[functions.zoom-webhook]
+verify_jwt = false

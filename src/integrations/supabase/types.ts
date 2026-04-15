@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      live_transcripts: {
+        Row: {
+          chunk_text: string
+          created_at: string
+          id: string
+          meeting_id: string
+          speaker: string | null
+          timestamp_ms: number | null
+        }
+        Insert: {
+          chunk_text: string
+          created_at?: string
+          id?: string
+          meeting_id: string
+          speaker?: string | null
+          timestamp_ms?: number | null
+        }
+        Update: {
+          chunk_text?: string
+          created_at?: string
+          id?: string
+          meeting_id?: string
+          speaker?: string | null
+          timestamp_ms?: number | null
+        }
+        Relationships: []
+      }
       zoom_tokens: {
         Row: {
           access_token: string
